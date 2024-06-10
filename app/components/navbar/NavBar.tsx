@@ -1,14 +1,17 @@
-'use client';
+"use client";
 
 import { FC } from "react";
 import Container from "../Container";
 import Logo from "./Logo";
 import Search from "./Search";
 import UserMenu from "./UserMenu";
+import { SafeUser } from "@/app/types";
 
-interface NavBarProps {}
+interface NavBarProps {
+  currentUser: SafeUser | null;
+}
 
-const NavBar: FC<NavBarProps> = () => {
+const NavBar: FC<NavBarProps> = ({ currentUser }) => {
   return (
     <div className="fixed w-full bg-white z-10 shadow-sm">
       <div className="py-4 border-b-[1px]">
@@ -16,7 +19,7 @@ const NavBar: FC<NavBarProps> = () => {
           <div className="flex flex-row items-center justify-between gap-3 md:gap-0">
             <Logo />
             <Search />
-            <UserMenu />
+            <UserMenu currentUser={currentUser} />
           </div>
         </Container>
       </div>
