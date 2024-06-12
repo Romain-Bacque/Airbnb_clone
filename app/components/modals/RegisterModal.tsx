@@ -1,6 +1,6 @@
 "use client";
 
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import axios from "axios";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -12,9 +12,12 @@ import toast from "react-hot-toast";
 import Button from "../Button";
 import { FcGoogle } from "react-icons/fc";
 import { AiFillGithub } from "react-icons/ai";
+import { signIn } from "next-auth/react";
+import useLoginModal from "@/app/hooks/useLoginModal";
 
 const RegisterModal: FC = () => {
   const registerModal = useRegisterModal();
+  const loginModal = useLoginModal();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -23,6 +26,7 @@ const RegisterModal: FC = () => {
     formState: { errors },
   } = useForm<FieldValues>({
     defaultValues: { name: "", email: "", password: "" },
+    mode: "onBlur",
   }); // Add default values for name, email, and password
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -37,6 +41,11 @@ const RegisterModal: FC = () => {
     }
   };
 
+  const handleToggleLoginModal = useCallback(() => {
+    registerModal.onClose();
+    loginModal.onOpen();
+  }, [loginModal, registerModal]);
+
   const bodyContent = // Add body content
     (
       <div className="flex flex-col gap-4">
@@ -48,15 +57,16 @@ const RegisterModal: FC = () => {
         <Input
           id="email"
           label="Email"
+          type="email"
           errors={errors}
-          register={register}
+          register={register} // register first arg is the id of the input field
           required
         />
         <Input
           id="name"
           label="Name"
           errors={errors}
-          register={register}
+          register={register} // register first arg is the id of the input field
           required
         />
         <Input
@@ -64,7 +74,7 @@ const RegisterModal: FC = () => {
           type="password"
           label="Password"
           errors={errors}
-          register={register}
+          register={register} // register first arg is the id of the input field
           required
         />
       </div>
@@ -78,14 +88,14 @@ const RegisterModal: FC = () => {
         label="Continue with Google"
         icon={FcGoogle}
         outline
-        onClick={() => {}}
+        onClick={() => signIn("google")}
       />
       <Button
         disabled={isLoading}
         label="Continue with Github"
         icon={AiFillGithub}
         outline
-        onClick={() => {}}
+        onClick={() => signIn("github")}
       />
       <div
         className="
@@ -98,7 +108,7 @@ const RegisterModal: FC = () => {
         <div className="flex flex-row justify-center items-center gap-2">
           <div>Already have an account?</div>
           <button
-            onClick={registerModal.onClose}
+            onClick={handleToggleLoginModal}
             className="text-neutral-800 cursor-pointer hover:underline"
           >
             Log in

@@ -1,11 +1,7 @@
 "use client";
 
 import { FC } from "react";
-import {
-  FieldErrors,
-  FieldValues,
-  UseFormRegister,
-} from "react-hook-form";
+import { FieldErrors, FieldValues, UseFormRegister } from "react-hook-form";
 import { BiDollar } from "react-icons/bi";
 
 interface InputProps {
@@ -25,10 +21,21 @@ const Input: FC<InputProps> = ({
   type = "text",
   disabled,
   formatPrice,
-  required,
+  required: isRequired,
   register,
   errors,
 }) => {
+  let emailOptions = {};
+
+  if (type === "email") {
+    emailOptions = {
+      pattern: {
+        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+        message: "Invalid email",
+      },
+    };
+  }
+
   return (
     <div className="w-full relative">
       {formatPrice && (
@@ -40,7 +47,10 @@ const Input: FC<InputProps> = ({
       <input
         id={id}
         disabled={disabled}
-        {...register(id, { required })}
+        {...register(id, {
+          required: { value: !!isRequired, message: `${label} is required` },
+          ...emailOptions,
+        })}
         placeholder=" "
         type={type}
         className={`
@@ -85,6 +95,7 @@ const Input: FC<InputProps> = ({
       >
         {label}
       </label>
+      <p className="text-rose-500">{errors[id]?.message?.toString()}</p>
     </div>
   );
 };

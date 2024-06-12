@@ -1,12 +1,12 @@
 import { create } from "zustand";
 
-interface UseRegisterModalProps {
+interface RegisterModalStore {
   isOpen: boolean;
   onOpen: () => void;
   onClose: () => void;
 }
 
-const useRegisterModal = create<UseRegisterModalProps>((set) => ({ // create a new store
+const useRegisterModal = create<RegisterModalStore>((set) => ({ // create a new store
   isOpen: false,
   onOpen: () => set({ isOpen: true }),
   onClose: () => set({ isOpen: false }),

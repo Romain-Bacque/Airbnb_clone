@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, use } from "react";
+import { FC, use, useCallback } from "react";
 import axios from "axios";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
@@ -18,9 +18,9 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const LoginModal: FC = () => {
-  const router = useRouter();
   const registerModal = useRegisterModal();
   const loginModal = useLoginModal();
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -53,6 +53,11 @@ const LoginModal: FC = () => {
     } catch {}
   };
 
+  const handleToggleRegisterModal = useCallback(() => {
+    loginModal.onClose();
+    registerModal.onOpen();
+  }, [loginModal, registerModal]);
+
   const bodyContent = // Add body content
     (
       <div className="flex flex-col gap-4">
@@ -61,7 +66,7 @@ const LoginModal: FC = () => {
           id="email"
           label="Email"
           errors={errors}
-          register={register}
+          register={register} // register first arg is the id of the input field
           required
         />
         <Input
@@ -69,7 +74,7 @@ const LoginModal: FC = () => {
           type="password"
           label="Password"
           errors={errors}
-          register={register}
+          register={register} // register first arg is the id of the input field
           required
         />
       </div>
@@ -83,14 +88,14 @@ const LoginModal: FC = () => {
         label="Continue with Google"
         icon={FcGoogle}
         outline
-        onClick={() => {}}
+        onClick={() => signIn("google")} // Add onClick event handler
       />
       <Button
         disabled={isLoading}
         label="Continue with Github"
         icon={AiFillGithub}
         outline
-        onClick={() => {}}
+        onClick={() => signIn("github")} // Add onClick event handler
       />
       <div
         className="
@@ -101,12 +106,12 @@ const LoginModal: FC = () => {
       "
       >
         <div className="flex flex-row justify-center items-center gap-2">
-          <div>Already have an account?</div>
+          <div>First time using Airbnb?</div>
           <button
-            onClick={loginModal.onClose}
+            onClick={handleToggleRegisterModal}
             className="text-neutral-800 cursor-pointer hover:underline"
           >
-            Log in
+            Create an account
           </button>
         </div>
       </div>

@@ -18,11 +18,13 @@
     "next": "14.2.3",
     "next-auth": "^4.24.7",
     "npm": "^10.8.1",
+    "query-string": "^9.0.0",
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.5",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.2.1",
+    "world-countries": "^5.0.0",
     "zustand": "^4.5.2"
   },
   "devDependencies": {

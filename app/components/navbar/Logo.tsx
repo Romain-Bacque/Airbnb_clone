@@ -13,6 +13,7 @@ function Logo() {
       height={100}
       src="/images/airbnb_logo.png"
       onClick={() => router.push("/")}
+      style={{ cursor: "pointer" }}
     />
   );
 }
