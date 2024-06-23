@@ -9,18 +9,19 @@ import ListingInfo from "./ListingInfo";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import { useRouter } from "next/navigation";
 import {
-  differenceInCalendarDays,
-  differenceInDays,
+  differenceInCalendarDays, // differenceInCalendarDays is a function that returns the difference in days between two dates, ignoring daylight saving time
+  differenceInDays, // differenceInDays is a function that returns the difference in days between two dates
   eachDayOfInterval,
 } from "date-fns";
 import axios from "axios";
 import toast from "react-hot-toast";
 import ListingReservation from "./ListingReservation";
+import { Range } from "react-date-range";
 
 const initialDateRange = {
   startDate: new Date(), // new Date returns the current date
   endDate: new Date(),
-  key: "selection",
+  key: "selection", // key is a property that is used to identify the date range (if we don't use a key, the calendar will not work properly)
 };
 
 interface ListingClientProps {
@@ -36,6 +37,9 @@ const ListingClient: FC<ListingClientProps> = ({
 }) => {
   const loginModal = useLoginModal();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalPrice, setTotalPrice] = useState(listing.price);
+  const [dateRange, setDateRange] = useState<Range>(initialDateRange);
 
   const disabledDates = useMemo(() => {
     let dates: Date[] = [];
@@ -52,9 +56,6 @@ const ListingClient: FC<ListingClientProps> = ({
 
     return dates;
   }, [reservations]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [totalPrice, setTotalPrice] = useState(listing.price);
-  const [dateRange, setDateRange] = useState(initialDateRange);
 
   const category = useMemo(() => {
     return categories.find((category) => category.label === listing.category);
@@ -96,6 +97,7 @@ const ListingClient: FC<ListingClientProps> = ({
   ]);
 
   useEffect(() => {
+    // here we calculate the total price based on the selected date range
     if (dateRange.startDate && dateRange.endDate) {
       // it's preferable to use differenceInCalendarDays instead of differenceInDays when working with dates, because it doesn't take into account daylight saving time, that could lead to unexpected results
       const dayCount = differenceInCalendarDays(
@@ -130,6 +132,8 @@ const ListingClient: FC<ListingClientProps> = ({
           bathroomCount={listing.bathroomCount}
           locationValue={listing.locationValue}
         />
+        {/* order-first and order-last are utility classes that allow us to change the order of the elements in the grid */}
+        {/* calendar must be the first element in the grid on mobile and the last element on desktop */}
         <div className="order-first mb-10 md:order-last md:col-span-3">
           <ListingReservation
             price={listing.price}
