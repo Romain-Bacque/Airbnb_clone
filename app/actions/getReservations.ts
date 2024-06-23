@@ -2,40 +2,50 @@
 
 import prisma from "@/app/libs/prismadb";
 
-export default async function getListingById(listingId?: string) {
-  try {
-    const listing = await prisma.listing.findUnique({
-      where: { id: listingId },
-      include: {
-        user: true,
-        reservations: true,
-      },
-    });
+interface IParams {
+  listingId?: string;
+  userId?: string;
+  authorId?: string;
+}
 
-    if (!listing) {
-      return null;
+export default async function getReservations(params: IParams) {
+  try {
+    const { userId, authorId, listingId } = params;
+
+    const query: any = {};
+
+    if (listingId) {
+      query.listingId = listingId;
     }
 
-    const formattedReservations = listing.reservations.map((reservation) => ({
+    if (userId) {
+      query.userId = userId;
+    }
+
+    if (authorId) {
+      query.authorId = authorId;
+    }
+
+    const reservations = await prisma.reservation.findMany({
+      where: query, // depending on the query, we can filter the reservations by listingId, userId, or authorId
+      include: {
+        listing: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    const formattedReservations = reservations.map((reservation) => ({
       ...reservation,
       startDate: reservation.startDate.toISOString(),
       endDate: reservation.endDate.toISOString(),
       createdAt: reservation.createdAt.toISOString(),
+      listing: {
+        ...reservation.listing,
+        createdAt: reservation.listing?.createdAt.toISOString(),
+      },
     }));
 
-    const formattedListing = {
-      ...listing,
-      createdAt: listing.createdAt.toISOString(),
-      user: {
-        ...listing.user,
-        createdAt: listing.user.createdAt.toISOString(),
-        updatedAt: listing.user.updatedAt.toISOString(),
-        emailVerified: listing.user.emailVerified?.toString() || null,
-      },
-      reservations: formattedReservations,
-    };
-
-    return formattedListing;
+    return formattedReservations;
   } catch (error: any) {
     throw new Error(error); // next.js will handle the error and show an error page to the user 
   }

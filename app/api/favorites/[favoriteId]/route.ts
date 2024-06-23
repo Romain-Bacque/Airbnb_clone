@@ -11,7 +11,7 @@ export async function POST(
   const currentUser = await getCurrentUser();
 
   if (!currentUser || currentUser.favoriteIds.includes(params.favoriteId)) {
-    throw new Error("Invalid ID");
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const user = await prisma.user.update({
@@ -34,7 +34,7 @@ export async function DELETE(
   const { favoriteId } = params;
 
   if (!currentUser || !currentUser.favoriteIds.includes(favoriteId)) {
-    throw new Error("Invalid ID");
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
   const user = await prisma.user.update({

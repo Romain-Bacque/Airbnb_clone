@@ -18,6 +18,6 @@ export default async function getListings() {
 
     return formattedListings;
   } catch (error: any) {
-    throw new Error(error);
+    throw new Error(error); // next.js will handle the error and show an error page to the user
   }
 }

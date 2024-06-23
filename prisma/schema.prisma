@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   id             String    @id @default(auto()) @map("_id") @db.ObjectId // @default(auto()) is used to generate a unique ID, @map("_id") is used to map the field to the _id field in MongoDB, @db.ObjectId is used to specify the type of the field
-  //the differences between auto() and uuid() are that auto() generates a unique ID automatically, while uuid() generates a unique ID based on the UUID standard
+  //the differences between auto() and uuid() are that auto() generates a unique ID automatically, while uuid() generates a unique ID based on the UUID standard*.
   name           String?
   email          String?   @unique
   emailVerified  DateTime? // DateTime is used to store date and time
@@ -76,6 +76,13 @@ model Reservation {
   totalPrice Int
   createdAt  DateTime @default(now())
 
-  User    User?    @relation(fields: [userId], references: [id])
-  Listing Listing? @relation(fields: [listingId], references: [id])
+  user    User?    @relation(fields: [userId], references: [id])
+  listing Listing? @relation(fields: [listingId], references: [id])
 }
+
+// *UUID standard:
+// The UUID (Universally Unique Identifier) standard defines a way to generate unique values that can be used as identifiers in computer systems. 
+// UUIDs are 128-bit numbers used to uniquely identify information in computer systems.
+// The standard provides a mechanism for generating IDs that are unique across different machines, networks, and at different times, minimizing the risk of duplication. 
+// UUIDs are represented as 32 hexadecimal digits, displayed in five groups separated by hyphens, in the form 8-4-4-4-12, for a total of 36 characters (including the hyphens).
+// For example: `123e4567-e89b-12d3-a456-426614174000`.

@@ -2,8 +2,9 @@ import getCurrentUser from "@/app/actions/getCurrentUser";
 import getListingById from "@/app/actions/getListingById";
 import ClientOnly from "@/app/components/ClientOnly";
 import EmptyState from "@/app/components/EmptyState";
-import { FC } from "react";
 import ListingClient from "./ListingClient";
+import getReservations from "@/app/actions/getReservations";
+import { SafeReservation } from "@/app/types";
 
 // We use 'I' to indicate that this is an interface
 interface IParams {
@@ -13,6 +14,7 @@ interface IParams {
 const ListingPage = async ({ params }: { params: IParams }) => {
   const listing = await getListingById(params.listingId);
   const currentUser = await getCurrentUser();
+  const reservations = await getReservations(params);
 
   if (!listing) {
     return (
@@ -28,7 +30,11 @@ const ListingPage = async ({ params }: { params: IParams }) => {
 
   return (
     <ClientOnly>
-      <ListingClient listing={listing} currentUser={currentUser} />
+      <ListingClient
+        listing={listing}
+        reservations={reservations as SafeReservation[]}
+        currentUser={currentUser}
+      />
     </ClientOnly>
   );
 };
