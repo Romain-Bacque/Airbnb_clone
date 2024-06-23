@@ -28,7 +28,7 @@ export default async function getCurrentUser() {
     }
     return {
       ...currentUser,
-      createdAt: currentUser.createdAt.toISOString(),
+      createdAt: currentUser.createdAt.toISOString(), // a date object is not serializable, so we convert it to a string (serializable means that it can be converted to a JSON string), date objects are not serializable because they contain functions and other non-serializable data
       updatedAt: currentUser.updatedAt.toISOString(),
       emailVerified: currentUser.emailVerified?.toISOString() || null,
     };

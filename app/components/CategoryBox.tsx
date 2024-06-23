@@ -15,7 +15,6 @@ interface CategoryBoxProps {
 const CategoryBox: FC<CategoryBoxProps> = ({
   icon: Icon,
   label,
-  description,
   selected,
 }) => {
   const router = useRouter();
