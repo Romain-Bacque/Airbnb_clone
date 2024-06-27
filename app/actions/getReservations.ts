@@ -23,7 +23,7 @@ export default async function getReservations(params: IParams) {
     }
 
     if (authorId) {
-      query.authorId = authorId;
+      query.listing = { userId: authorId }; // userId represents the owner of the listing
     }
 
     const reservations = await prisma.reservation.findMany({
@@ -47,6 +47,6 @@ export default async function getReservations(params: IParams) {
 
     return formattedReservations;
   } catch (error: any) {
-    throw new Error(error); // next.js will handle the error and show an error page to the user 
+    throw new Error(error); // next.js will handle the error and show an error page to the user
   }
 }

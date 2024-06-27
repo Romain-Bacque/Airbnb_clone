@@ -1,5 +1,6 @@
 "use client";
 
+// because we only import this component in the listings page, we don't need to store it in the components folder.
 import { SafeListing, SafeReservation, SafeUser } from "@/app/types";
 import { FC, useCallback, useEffect, useMemo, useState } from "react";
 import Container from "@/app/components/Container";
@@ -78,7 +79,7 @@ const ListingClient: FC<ListingClientProps> = ({
       .then(() => {
         toast.success("Listing reserved!");
         setDateRange(initialDateRange);
-        router.push('/trips')
+        router.push("/trips");
       })
       .catch(() => {
         toast.error("Something went wrong!");
@@ -101,8 +102,8 @@ const ListingClient: FC<ListingClientProps> = ({
     if (dateRange.startDate && dateRange.endDate) {
       // it's preferable to use differenceInCalendarDays instead of differenceInDays when working with dates, because it doesn't take into account daylight saving time, that could lead to unexpected results
       const dayCount = differenceInCalendarDays(
-        dateRange.startDate,
-        dateRange.endDate
+        dateRange.endDate,
+        dateRange.startDate
       );
 
       if (dayCount && listing.price) {

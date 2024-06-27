@@ -2,11 +2,11 @@ import EmptyState from "../components/EmptyState";
 import ClientOnly from "../components/ClientOnly";
 
 import getCurrentUser from "../actions/getCurrentUser";
-import getReservations from "../actions/getReservations";
-import ReservationClient from "./ReservationsClient";
-import { SafeReservation } from "../types";
+import TripsClient from "./PropertiesClient";
+import { SafeListing } from "../types";
+import getUserProperties from "../actions/getProperties";
 
-const TripsPage = async () => {
+const PropertiesPage = async () => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -17,14 +17,14 @@ const TripsPage = async () => {
     );
   }
 
-  const reservations = await getReservations({ authorId: currentUser.id });
+  const properties = await getUserProperties(currentUser.id);
 
-  if (reservations.length === 0) {
+  if (properties.length === 0) {
     return (
       <ClientOnly>
         <EmptyState
-          title="No reservation found"
-          subtitle="Looks like you haven't any reservation."
+          title="No property found"
+          subtitle="Looks like you haven't reserved any property."
         />
       </ClientOnly>
     );
@@ -32,12 +32,12 @@ const TripsPage = async () => {
 
   return (
     <ClientOnly>
-      <ReservationClient
-        reservations={reservations as SafeReservation[]}
+      <TripsClient
+        properties={properties as SafeListing[]}
         currentUser={currentUser}
       />
     </ClientOnly>
   );
 };
 
-export default TripsPage;
+export default PropertiesPage;

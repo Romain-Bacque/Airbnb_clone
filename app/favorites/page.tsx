@@ -2,11 +2,11 @@ import EmptyState from "../components/EmptyState";
 import ClientOnly from "../components/ClientOnly";
 
 import getCurrentUser from "../actions/getCurrentUser";
-import getReservations from "../actions/getReservations";
-import ReservationClient from "./ReservationsClient";
-import { SafeReservation } from "../types";
+import FavoritesClient from "./FavoritesClient";
+import { SafeListing } from "../types";
+import getUserFavorites from "../actions/getFavorites";
 
-const TripsPage = async () => {
+const FavoritesPage = async () => {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
@@ -17,14 +17,17 @@ const TripsPage = async () => {
     );
   }
 
-  const reservations = await getReservations({ authorId: currentUser.id });
+  const favorites = await getUserFavorites({
+    userId: currentUser.id,
+    favoritesIds: currentUser.favoriteIds,
+  });
 
-  if (reservations.length === 0) {
+  if (favorites.length === 0) {
     return (
       <ClientOnly>
         <EmptyState
-          title="No reservation found"
-          subtitle="Looks like you haven't any reservation."
+          title="No favorite found"
+          subtitle="Looks like you haven't any favorite."
         />
       </ClientOnly>
     );
@@ -32,12 +35,12 @@ const TripsPage = async () => {
 
   return (
     <ClientOnly>
-      <ReservationClient
-        reservations={reservations as SafeReservation[]}
+      <FavoritesClient
+        favorites={favorites as SafeListing[]}
         currentUser={currentUser}
       />
     </ClientOnly>
   );
 };
 
-export default TripsPage;
+export default FavoritesPage;

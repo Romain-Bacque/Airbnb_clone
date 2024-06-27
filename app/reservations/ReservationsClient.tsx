@@ -1,6 +1,6 @@
 "use client";
 
-// because we only import this component in the trips page, we don't need to store it in the components folder.
+// because we only import this component in the reservations page, we don't need to store it in the components folder.
 import { FC, useCallback, useState } from "react";
 import Heading from "../components/Heading";
 import Container from "../components/Container";
@@ -10,12 +10,12 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-interface TripsClientProps {
+interface ReservationsClientProps {
   reservations: SafeReservation[];
   currentUser: SafeUser;
 }
 
-const TripsClient: FC<TripsClientProps> = ({ reservations, currentUser }) => {
+const ReservationsClient: FC<ReservationsClientProps> = ({ reservations, currentUser }) => {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState("");
 
@@ -42,8 +42,8 @@ const TripsClient: FC<TripsClientProps> = ({ reservations, currentUser }) => {
   return (
     <Container>
       <Heading
-        title="Trips"
-        subtitle="Where you've been and where you're going"
+        title="Reservations"
+        subtitle="Bookings on your properties"
       />
       <div
         className="
@@ -64,7 +64,7 @@ const TripsClient: FC<TripsClientProps> = ({ reservations, currentUser }) => {
             currentUser={currentUser}
             actionId={reservation.id}
             disabled={deletingId === reservation.id}
-            actionLabel="Cancel Reservation"
+            actionLabel="Cancel Guest Reservation"
             onAction={handleCancel}
           />
         ))}
@@ -73,4 +73,4 @@ const TripsClient: FC<TripsClientProps> = ({ reservations, currentUser }) => {
   );
 };
 
-export default TripsClient;
+export default ReservationsClient;

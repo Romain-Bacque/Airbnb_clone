@@ -10,6 +10,9 @@ export default async function Home() {
   const listings = await getListings();
   const currentUser = await getCurrentUser();
 
+  // to test the error state, uncomment the line below :
+  // throw new Error("This is an error");
+
   if (listings?.length === 0) {
     return (
       <ClientOnly>

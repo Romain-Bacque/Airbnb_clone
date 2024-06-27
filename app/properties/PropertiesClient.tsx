@@ -1,21 +1,21 @@
 "use client";
 
-// because we only import this component in the trips page, we don't need to store it in the components folder.
+// because we only import this component in the properties page, we don't need to store it in the components folder.
 import { FC, useCallback, useState } from "react";
 import Heading from "../components/Heading";
 import Container from "../components/Container";
-import { SafeReservation, SafeUser } from "../types";
+import { SafeListing, SafeUser } from "../types";
 import ListingCard from "../components/listings/ListingCard";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 
-interface TripsClientProps {
-  reservations: SafeReservation[];
+interface PropertiesClientProps {
+  properties: SafeListing[];
   currentUser: SafeUser;
 }
 
-const TripsClient: FC<TripsClientProps> = ({ reservations, currentUser }) => {
+const PropertiesClient: FC<PropertiesClientProps> = ({ properties, currentUser }) => {
   const router = useRouter();
   const [deletingId, setDeletingId] = useState("");
 
@@ -24,13 +24,13 @@ const TripsClient: FC<TripsClientProps> = ({ reservations, currentUser }) => {
       setDeletingId(id);
 
       axios
-        .delete(`/api/reservations/${id}`)
+        .delete(`/api/listings/${id}`)
         .then(() => {
-          toast.success("Reservation cancelled");
+          toast.success("Property Deleted");
           router.refresh();
         })
         .catch((error) => {
-          toast.error("Failed to cancel reservation", error);
+          toast.error("Failed to delete property", error);
         })
         .finally(() => {
           setDeletingId("");
@@ -42,8 +42,8 @@ const TripsClient: FC<TripsClientProps> = ({ reservations, currentUser }) => {
   return (
     <Container>
       <Heading
-        title="Trips"
-        subtitle="Where you've been and where you're going"
+        title="Properties"
+        subtitle="Your properties and listings"
       />
       <div
         className="
@@ -57,14 +57,14 @@ const TripsClient: FC<TripsClientProps> = ({ reservations, currentUser }) => {
           2xl:grid-cols-6
           gap-8"
       >
-        {reservations?.map((reservation) => (
+        {properties?.map((property) => (
           <ListingCard
-            key={reservation.id}
-            data={reservation.listing}
+            key={property.id}
+            data={property}
             currentUser={currentUser}
-            actionId={reservation.id}
-            disabled={deletingId === reservation.id}
-            actionLabel="Cancel Reservation"
+            actionId={property.id}
+            disabled={deletingId === property.id}
+            actionLabel="Delete Property"
             onAction={handleCancel}
           />
         ))}
@@ -73,4 +73,4 @@ const TripsClient: FC<TripsClientProps> = ({ reservations, currentUser }) => {
   );
 };
 
-export default TripsClient;
+export default PropertiesClient;
